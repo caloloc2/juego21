@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <windows.h>
 
 /* DECLARACION DE VARIABLES, VECTORES Y ARREGLOS */
 int opcion;
@@ -12,7 +11,7 @@ int cuprier[10];
 int numero_cartas = 0;
 float valor_apostado = 0 ;
 float apuesta = 0;
-bool cambio_as = false;
+int cambio_as = 0;
 int valor_as = 1;
 
 /* DECLARACION DE FUNCIONES */
@@ -60,10 +59,11 @@ int main(){
 				system("cls");
 				printf("EMPIEZA EL JUEGO\n\n");
 				int op2 = 0;
-				bool valida = true;
-				bool juega = true;
+				int valida = 1;
+				int juega = 1;
+				int x;
 				
-				while(juega){
+				while(juega==1){
 					if (saldo_tarjeta()>0){
 						printf("Su saldo actual es de %f\n", saldo_tarjeta());
 					
@@ -71,7 +71,7 @@ int main(){
 						
 						printf("Repartiendo cartas...\n\n");
 						/* SE REPARTE DOS CARTAS AL JUGADOR Y CUPRIER */
-						for (int x=0; x<2; x++){
+						for (x=0; x<2; x++){
 							jugador[x] = barajar();
 							cuprier[x] = barajar();
 							numero_cartas += 1;
@@ -79,8 +79,8 @@ int main(){
 						
 						mostrar_cartas(0);					
 						
-						if ((suma_cartas(0)<21) and (suma_cartas(1)<21)){
-							while(valida){
+						if ((suma_cartas(0)<21) && (suma_cartas(1)<21)){
+							while(valida==1){
 								printf("1. Aumentar apuesta\n");
 								printf("2. Otra carta\n");
 								printf("3. No mas cartas\n");
@@ -98,13 +98,13 @@ int main(){
 										int nueva_carta = barajar();										
 										
 										if (nueva_carta==1){
-											if (cambio_as==false){											
+											if (cambio_as==0){											
 												int op3 = 0;
 												printf("Has obtenido un AS.\n");
 												printf("1. Cambiar valor a 1.\n");
 												printf("2. Cambiar valor a 11.\n");
 												
-												while((op3!=1)and(op3!=2)){
+												while((op3!=1)&&(op3!=2)){
 													printf("Selecciona una opcion: ");
 													scanf("%d", &op3);
 												}
@@ -115,7 +115,7 @@ int main(){
 													valor_as = 11;
 												}
 												
-												cambio_as = true;
+												cambio_as = 1;
 											}
 												
 											jugador[numero_cartas] = valor_as;
@@ -149,8 +149,8 @@ int main(){
 																				
 										printf("\nSu saldo actual es de %f\n\n\n", saldo_tarjeta());
 										
-										juega = false;
-										valida = false;										
+										juega = 0;
+										valida = 0;										
 										reinicia();
 										break;
 									};
@@ -162,11 +162,11 @@ int main(){
 							}	
 						}else{						
 							printf("Juego terminado\n");
-							juega = false;
+							juega = 0;
 						}
 					}else{
 						printf("No tiene saldo en su tarjeta. Por favor recarguela.\n\n\n");
-						juega = false;
+						juega = 0;
 					}
 				}				
 				break;
@@ -212,7 +212,7 @@ void reglas(void){
 	printf("REGLAS DEL JUEGO\n\n");
 	printf("1. Su puesta minima es de %f y maxima de %f\n", limites[0], limites[1]);
 	printf("2. El juego consiste en sumar 21 con sus cartas\n");
-	printf("3. El juego termina cuando cualquiera de los jugadores llega a 21 o se sobrepasa, si es mayor o menos a 21, gana la persona cuya suma de cartas se acerque mas a 21 sin pasarse.\n\n\n");
+	printf("3. El juego termina cu&&o cualquiera de los jugadores llega a 21 o se sobrepasa, si es mayor o menos a 21, gana la persona cuya suma de cartas se acerque mas a 21 sin pasarse.\n\n\n");
 }
 
 int aleatorio(int min, int max){
@@ -241,7 +241,8 @@ void modificar_saldo(float valor, int op){
 
 int suma_cartas(int op){
 	int total = 0;
-	for (int x=0; x<10; x++){
+	int x;
+	for (x=0; x<10; x++){
 		if (op==0){
 			total += jugador[x];
 		}else{
@@ -277,8 +278,9 @@ void nombres_cartas(int carta){
 }
 
 void mostrar_cartas(int op){	
+	int x;
 	printf("Cartas del jugador = [");
-	for (int x=0; x<numero_cartas; x++){
+	for (x=0; x<numero_cartas; x++){
 		nombres_cartas(jugador[x]);
 		if (x<(numero_cartas-1)){
 			printf(" - ");
@@ -289,7 +291,7 @@ void mostrar_cartas(int op){
 	
 	if (op==1){
 		printf("Cartas del cuprier = [");
-		for (int x=0; x<numero_cartas; x++){
+		for (x=0; x<numero_cartas; x++){
 			nombres_cartas(cuprier[x]);			
 			if (x<(numero_cartas-1)){
 				printf(" - ");
@@ -304,7 +306,7 @@ void realizar_apuesta(){
 	printf("\nIngrese el valor de su apuesta: $ ");
 	scanf("%f", &apuesta);
 	
-	if ((apuesta>=limites[0]) and (apuesta<=limites[1])){
+	if ((apuesta>=limites[0]) && (apuesta<=limites[1])){
 		printf("Se ha descontado $ %f de su tarjeta\n\n", apuesta);
 		modificar_saldo(apuesta, 1);
 		valor_apostado += apuesta;
@@ -333,16 +335,16 @@ void analiza_cartas(void){
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
 		}		
 	}else if (suma_jugador<suma_cuprier){
-		if ((suma_cuprier==21) and (suma_jugador==21)){
+		if ((suma_cuprier==21) && (suma_jugador==21)){
 			printf("\nExiste un empate\n");
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
-		}else if ((suma_cuprier<=21) and (suma_jugador<21)){
+		}else if ((suma_cuprier<=21) && (suma_jugador<21)){
 			printf("\nCuprier ha ganado\n");
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
-		}else if ((suma_cuprier>21) and (suma_jugador<=21)){			
+		}else if ((suma_cuprier>21) && (suma_jugador<=21)){			
 			printf("\nUsted ha ganado $ %f USD!!\n", total_ganado);
 			modificar_saldo(total_ganado, 0);
-		}else if ((suma_cuprier>21) and (suma_jugador>21)){
+		}else if ((suma_cuprier>21) && (suma_jugador>21)){
 			printf("\nNadie ha ganado\n");
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
 		}
@@ -352,7 +354,8 @@ void analiza_cartas(void){
 void reinicia(void){
 	numero_cartas = 0;
 	valor_apostado = 0;
-	for (int x=0; x<10; x++){		
+	int x;
+	for (x=0; x<10; x++){		
 		jugador[x] = 0;
 		cuprier[x] = 0;
 	}
