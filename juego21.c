@@ -97,13 +97,13 @@ int main(){
 									case 2: {
 										printf("\nRepartiendo cartas al jugador...\n\n");
 										primera_vez = 0; // variable bandera para saber que se reparte las cartas despues de la primera vez
-										int nueva_carta = barajar(0);
+										int nueva_carta = barajar(0);										
 										
 										if (nueva_carta==7){
 											int reemplazo=20;
 											printf("Has obtenido un 7.\n");
 											while(reemplazo>numero_cartas){
-												printf("Escoja una carta a reemplazar: ");
+												printf("Escoja la posicion de la carta a reemplazar: ");
 												scanf("%d", &reemplazo);
 												
 												jugador[(reemplazo-1)] = nueva_carta;
