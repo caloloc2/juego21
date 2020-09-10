@@ -246,9 +246,19 @@ int suma_cartas(int op){
 	int x;	 
 	for (x=0; x<10; x++){ /* Recorre las 10 posiciones de cada vector */
 		if (op==0){ // Si es cero, entonces obtiene la suma del vector jugador
-			total += jugador[x];
+			if ((jugador[x]==11) || (jugador[x]==12) || (jugador[x]==13)){ // para las J, Q, y K con valores 11, 12 y 13... se suma solo 10
+				total += 10;
+			}else{
+				total += jugador[x];	
+			}
+			
 		}else{ // Si es otro valor, entonces obtiene la suma del vector cuprier
-			total += cuprier[x];
+			if ((cuprier[x]==11) || (cuprier[x]==12) || (cuprier[x]==13)){ // para las J, Q, y K con valores 11, 12 y 13... se suma solo 10
+				total += 10;
+			}else{
+				total += cuprier[x];
+			}
+			
 		}
 	}
 	return total; // retorna la suma total
@@ -330,13 +340,19 @@ void realizar_apuesta(){
 
 void analiza_cartas(void){
 	float total_ganado = valor_apostado * 2; // en caso de ganar, se entregara el doble de la apuesta
+	float total_ganado_21 = valor_apostado * 3; // en caso de ganar con 21, se entregara el triple de la apuesta
 	int suma_jugador = suma_cartas(0); // obtiene la suma de las cartas para el jugador
 	int suma_cuprier = suma_cartas(1); // obtiene la suma de las cartas para el cuprier
 		
 	if (suma_jugador>suma_cuprier){ // Verifica que las cartas del jugador sean mayor que las del cuprier
-		if (suma_jugador<=21){ // Verifica que no sobrepase 21 
-			printf("\nUsted ha ganado $ %f USD!!\n", total_ganado);
-			modificar_saldo(total_ganado, 0); // acredita el valor apostado x 2
+		if (suma_jugador<=21){ // Verifica que no sobrepase 21
+			if (suma_jugador==21){ // En caso de que gane el jugador con 21, se duplica el valor ganado
+				printf("\nUsted ha ganado con 21, recibe $ %f USD!!\n", total_ganado_21);
+				modificar_saldo(total_ganado_21, 0); // acredita el valor apostado x 2	
+			}else if (suma_jugador<21){ // si gana con menos de 21, entonces solamente recibe el valor apostado x 2
+				printf("\nUsted ha ganado $ %f USD!!\n", total_ganado);
+				modificar_saldo(total_ganado, 0); // acredita el valor apostado x 2	
+			}			
 		}else{ // Se sobrepaso de 21
 			printf("\nCuprier ha ganado\n");
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
@@ -344,7 +360,8 @@ void analiza_cartas(void){
 	}else if (suma_jugador<suma_cuprier){ // En caso de que las cartas del cuprier sean mayores que las del jugador
 		if ((suma_cuprier==21) && (suma_jugador==21)){ // En caso de que los dos tengan 21
 			printf("\nExiste un empate\n");
-			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
+			printf("Se devuelve su valor apostado $ %f USD!!\n", valor_apostado);
+			modificar_saldo(valor_apostado, 0);
 		}else if ((suma_cuprier<=21) && (suma_jugador<21)){ // En caso de que el cuprier tenga 21 o menos, y el jugador menos de 21
 			printf("\nCuprier ha ganado\n");
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
@@ -352,8 +369,17 @@ void analiza_cartas(void){
 			printf("\nUsted ha ganado $ %f USD!!\n", total_ganado);
 			modificar_saldo(total_ganado, 0);
 		}else if ((suma_cuprier>21) && (suma_jugador>21)){ // En caso de que los dos tengas mas de 21
-			printf("\nNadie ha ganado\n");
-			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
+			if ((suma_cuprier>21) && (suma_cuprier<suma_jugador)){ // Si la suma de cartas del cuprier se acerca a 21, gana cuprier
+				printf("\nCuprier ha ganado\n");
+				printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
+			}else if ((suma_jugador>21) && (suma_jugador<suma_cuprier)){ // Si la suma de cartas del jugador se acerca a 21, gana jugador
+				printf("\nUsted ha ganado $ %f USD!!\n", total_ganado);
+				modificar_saldo(total_ganado, 0); // acredita el valor apostado x 2
+			}else if (suma_cuprier=suma_jugador){ // Si son iguales, entonces empate
+				printf("\nExiste un empate\n");
+				printf("Se devuelve su valor apostado $ %f USD!!\n", valor_apostado);
+				modificar_saldo(valor_apostado, 0);
+			}			
 		}
 	}		
 }
