@@ -100,13 +100,29 @@ int main(){
 										int nueva_carta = barajar(0);										
 										
 										if (nueva_carta==7){
-											int reemplazo=20;
+											int op4=0;
+//											int reemplazo=20;
 											printf("Has obtenido un 7.\n");
-											while(reemplazo>numero_cartas){
-												printf("Escoja la posicion de la carta a reemplazar: ");
-												scanf("%d", &reemplazo);
+//											while(reemplazo>numero_cartas){
+//												printf("Escoja la posicion de la carta a reemplazar: ");
+//												scanf("%d", &reemplazo);
+//												
+//												jugador[(reemplazo-1)] = nueva_carta;
+//											}
+											while ((op4!=1) && (op4!=2)){
+												printf("1. Deseas obtener una nueva carta.\n");
+												printf("2. Mantener la nueva carta.\n");
+												printf("Seleccione una opcion: ");
+												scanf("%d", &op4);
 												
-												jugador[(reemplazo-1)] = nueva_carta;
+												if (op4==1){ // Obtiene una nueva carta aleatoria
+//													r_palo = aleatorio(1, 4);
+//													carta_retorno = aleatorio(1, 13);	
+													jugador[numero_cartas] = barajar(0);
+												}else if (op4==2){
+//													carta_retorno = num_carta;
+													jugador[numero_cartas] = nueva_carta;
+												}
 											}
 										}else{
 											jugador[numero_cartas] = nueva_carta;
