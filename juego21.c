@@ -18,7 +18,6 @@ int valor_as = 1;
 float saldo_tarjeta(void);
 void reglas(void);
 int aleatorio(int, int);
-float obtener_saldo(void);
 void modificar_saldo(float, int);
 int suma_cartas(int);
 void realizar_apuesta(void);
@@ -39,14 +38,14 @@ int main(){
     printf("Su numero de tarjeta es %d\n\n", aleatorio(100, 200));
 
     while(opcion!=5){
-    	printf("Selecciona una opción:\n");
+    	printf("Selecciona una opciï¿½n:\n");
 	    printf("1. Ver reglas del juego\n");
 	    printf("2. Empezar el juego\n");
 	    printf("3. Ver saldo de tarjeta\n");
 	    printf("4. Cargar saldo a tarjeta\n");
 	    printf("5. Salir\n");
     
-    	printf("Su opción: ");
+    	printf("Su opciï¿½n: ");
     	scanf("%d", &opcion);    	
     	
     	switch(opcion){
@@ -205,10 +204,12 @@ int main(){
 /* DEFINICION DE FUNCIONES */
 
 float saldo_tarjeta(void){
+	/* Devuelve el saldo actual de la tarjeta */
 	return saldo_actual;
 }
 
 void reglas(void){
+	/* Imprime las reglas del juego */
 	printf("REGLAS DEL JUEGO\n\n");
 	printf("1. Su puesta minima es de %f y maxima de %f\n", limites[0], limites[1]);
 	printf("2. El juego consiste en sumar 21 con sus cartas\n");
@@ -216,43 +217,45 @@ void reglas(void){
 }
 
 int aleatorio(int min, int max){
+	/* Cambia el valor de la semilla de los randomicos */
 	srand(time(NULL));
+	/* Obtiene un valor aleatorio entre min y max, con base a su semilla */
 	return min + rand() % (max + 1 - min);
 }
 
-int barajar(void){	
+int barajar(void){
+	/* Obtiene un aleatorio para el palo y carta */
 	int r_palo = aleatorio(1, 4);
 	int num_carta = aleatorio(1, 13);
+	/* Espera 1 segundo en cada reparto, para que se actualice una nueva semilla */
 	Sleep(1000);
+	/* Retorna la carta */
 	return num_carta;
 }
 
-float obtener_saldo(void){
-	return saldo_actual;
-}
-
-void modificar_saldo(float valor, int op){
-	if (op==0){
+void modificar_saldo(float valor, int op){	
+	if (op==0){ /* Si es cero entonces suma */
 		saldo_actual += valor;
-	}else{
+	}else{ /* Si es otro valor entonces resta */
 		saldo_actual -= valor;
 	}
 }
 
 int suma_cartas(int op){
 	int total = 0;
-	int x;
-	for (x=0; x<10; x++){
-		if (op==0){
+	int x;	 
+	for (x=0; x<10; x++){ /* Recorre las 10 posiciones de cada vector */
+		if (op==0){ // Si es cero, entonces obtiene la suma del vector jugador
 			total += jugador[x];
-		}else{
+		}else{ // Si es otro valor, entonces obtiene la suma del vector cuprier
 			total += cuprier[x];
 		}
 	}
-	return total;
+	return total; // retorna la suma total
 }
 
 void nombres_cartas(int carta){
+	// Cambia el nombre de las cartas, excepto las cartas numericas
 	switch(carta){
 		case 1: {
 			printf("AS");
@@ -279,6 +282,7 @@ void nombres_cartas(int carta){
 
 void mostrar_cartas(int op){	
 	int x;
+	/* Muesta las cartas del jugador */
 	printf("Cartas del jugador = [");
 	for (x=0; x<numero_cartas; x++){
 		nombres_cartas(jugador[x]);
@@ -287,9 +291,11 @@ void mostrar_cartas(int op){
 		}
 	}
 	printf("]\n");
+	/* Muesta la suma de las cartas del jugador */
 	printf("La suma de tus cartas es de %d\n\n", suma_cartas(0));
 	
-	if (op==1){
+	if (op==1){ // Si op es uno, entonces muestra las cartas del cuprier tambien
+		/* Muesta las cartas del cuprier */
 		printf("Cartas del cuprier = [");
 		for (x=0; x<numero_cartas; x++){
 			nombres_cartas(cuprier[x]);			
@@ -298,53 +304,54 @@ void mostrar_cartas(int op){
 			}
 		}
 		printf("]\n");
+		/* Muesta la suma de las cartas del cuprier */
 		printf("La suma de las cartas del cuprier es de %d\n\n", suma_cartas(1));	
 	}	
 }
 
-void realizar_apuesta(){
+void realizar_apuesta(){	
 	printf("\nIngrese el valor de su apuesta: $ ");
-	scanf("%f", &apuesta);
+	scanf("%f", &apuesta); // obtiene el valor de la apuesta
 	
-	if ((apuesta>=limites[0]) && (apuesta<=limites[1])){
+	if ((apuesta>=limites[0]) && (apuesta<=limites[1])){ // Si esta dentro de los limites, descuenta el valor ingresado
 		printf("Se ha descontado $ %f de su tarjeta\n\n", apuesta);
-		modificar_saldo(apuesta, 1);
-		valor_apostado += apuesta;
-	}else if (apuesta<limites[0]){
+		modificar_saldo(apuesta, 1); // resta del saldo actual de la tarjeta
+		valor_apostado += apuesta; // guarda el valor apostado
+	}else if (apuesta<limites[0]){ // Si el valor de la apuesta es menor que el limite inferior, entonces descuenta el valor del limite inferior
 		printf("Se ha descontado $ %f de su tarjeta\n\n", limites[0]);
-		modificar_saldo(limites[0], 1);
-		valor_apostado += limites[0];
-	}else if (apuesta>limites[1]){
+		modificar_saldo(limites[0], 1); // resta del saldo actual de la tarjeta
+		valor_apostado += limites[0]; // guarda el valor apostado
+	}else if (apuesta>limites[1]){ // Si el valor de la apuesta es mayor que el limite superior, entonces descuenta el valor del limite superior
 		printf("Se ha descontado $ %f de su tarjeta\n\n", limites[1]);
-		modificar_saldo(limites[1], 1);
-		valor_apostado += limites[1];
+		modificar_saldo(limites[1], 1); // resta del saldo actual de la tarjeta
+		valor_apostado += limites[1]; // guarda el valor apostado
 	}
 }
 
 void analiza_cartas(void){
-	float total_ganado = valor_apostado * 2;
-	int suma_jugador = suma_cartas(0);
-	int suma_cuprier = suma_cartas(1);
+	float total_ganado = valor_apostado * 2; // en caso de ganar, se entregara el doble de la apuesta
+	int suma_jugador = suma_cartas(0); // obtiene la suma de las cartas para el jugador
+	int suma_cuprier = suma_cartas(1); // obtiene la suma de las cartas para el cuprier
 		
-	if (suma_jugador>suma_cuprier){
-		if (suma_jugador<=21){
+	if (suma_jugador>suma_cuprier){ // Verifica que las cartas del jugador sean mayor que las del cuprier
+		if (suma_jugador<=21){ // Verifica que no sobrepase 21 
 			printf("\nUsted ha ganado $ %f USD!!\n", total_ganado);
-			modificar_saldo(total_ganado, 0);	
-		}else{
+			modificar_saldo(total_ganado, 0); // acredita el valor apostado x 2
+		}else{ // Se sobrepaso de 21
 			printf("\nCuprier ha ganado\n");
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
 		}		
-	}else if (suma_jugador<suma_cuprier){
-		if ((suma_cuprier==21) && (suma_jugador==21)){
+	}else if (suma_jugador<suma_cuprier){ // En caso de que las cartas del cuprier sean mayores que las del jugador
+		if ((suma_cuprier==21) && (suma_jugador==21)){ // En caso de que los dos tengan 21
 			printf("\nExiste un empate\n");
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
-		}else if ((suma_cuprier<=21) && (suma_jugador<21)){
+		}else if ((suma_cuprier<=21) && (suma_jugador<21)){ // En caso de que el cuprier tenga 21 o menos, y el jugador menos de 21
 			printf("\nCuprier ha ganado\n");
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
-		}else if ((suma_cuprier>21) && (suma_jugador<=21)){			
+		}else if ((suma_cuprier>21) && (suma_jugador<=21)){ // En caso de que el cuprier tenga mas de 21, y el jugador menos de 21
 			printf("\nUsted ha ganado $ %f USD!!\n", total_ganado);
 			modificar_saldo(total_ganado, 0);
-		}else if ((suma_cuprier>21) && (suma_jugador>21)){
+		}else if ((suma_cuprier>21) && (suma_jugador>21)){ // En caso de que los dos tengas mas de 21
 			printf("\nNadie ha ganado\n");
 			printf("Usted ha perdido $ %f USD!!\n", valor_apostado);
 		}
@@ -352,6 +359,7 @@ void analiza_cartas(void){
 }
 
 void reinicia(void){
+	/* Reinicio de variables y vectores para volver a jugar */
 	numero_cartas = 0;
 	valor_apostado = 0;
 	int x;
