@@ -38,14 +38,14 @@ int main(){
     printf("Su numero de tarjeta es %d\n\n", aleatorio(100, 200));
 
     while(opcion!=5){
-    	printf("Selecciona una opci�n:\n");
+    	printf("Selecciona una opcion:\n");
 	    printf("1. Ver reglas del juego\n");
 	    printf("2. Empezar el juego\n");
 	    printf("3. Ver saldo de tarjeta\n");
 	    printf("4. Cargar saldo a tarjeta\n");
 	    printf("5. Salir\n");
     
-    	printf("Su opci�n: ");
+    	printf("Su opcion: ");
     	scanf("%d", &opcion);    	
     	
     	switch(opcion){
