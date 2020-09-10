@@ -233,7 +233,7 @@ int barajar(int quien){
 				
 				cambio_as = 1;
 			}			
-			carta_retorno = valor_as;		
+			carta_retorno = valor_as;
 		}else if (num_carta==7){
 			if (primera_vez == 1){
 				int op4 = 0;
