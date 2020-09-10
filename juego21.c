@@ -422,7 +422,11 @@ void analiza_cartas(void){
 				modificar_saldo(valor_apostado, 0);
 			}			
 		}
-	}		
+	}else if (suma_cuprier==suma_jugador){
+		printf("\nExiste un empate\n");
+		printf("Se devuelve su valor apostado $ %f USD!!\n", valor_apostado);
+		modificar_saldo(valor_apostado, 0);
+	}
 }
 
 void reinicia(void){
